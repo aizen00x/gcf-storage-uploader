@@ -4,7 +4,12 @@ from datetime import datetime
 from google.cloud import storage
 from .upload_timeout_error import UploadTimeoutError
 
+
 class Bucket:
+    """
+    Establishes connection with Google Cloud Storage and is responsible for interaction with a
+    bucket
+    """
     def __init__(self, bucket_name: str = os.environ.get("BUCKET_NAME", "")):
         if not bucket_name:
             raise Exception("Bucket name was not provided. Pass it to the constructor or set "
@@ -12,7 +17,14 @@ class Bucket:
 
         self.__bucket = storage.Client().bucket(bucket_name)
 
-    def upload(self, data: str, timeout: int = 60):
+    def upload(self, data: str, timeout: int = 60) -> None:
+        """
+        Upload to blob from string
+        :param str data: String representation of JSON data
+        :param int timeout: Timeout for upload. Default is 60 seconds
+        :return: None
+        :raises: UploadTimeoutError
+        """
         now = datetime.now()
         date = now.strftime("%d-%m-%Y")
         time = now.strftime("%H:%M:%S")
